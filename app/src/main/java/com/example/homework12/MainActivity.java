@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
     */
     public void sendAction(View view) {
         String s = ed_content.getText().toString();
-        Message message = dbHelper.selectOne(dbHelper.insert(s, MessageType.RIGHT_CONTENTS));
+        long id = dbHelper.insert(s, MessageType.RIGHT_CONTENTS);
+        Message message = dbHelper.selectOne(id);
         messages.add(message);
         messageAdapter.notifyDataSetChanged();
         ed_content.setText("");

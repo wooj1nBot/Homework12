@@ -36,7 +36,7 @@ public class DBHelper extends SQLiteOpenHelper {
             String contents = cursor.getString(1);
             String registerDate = cursor.getString(2);
             int code = cursor.getInt(3);
-            message = new Message(id, contents, registerDate, MessageType.of(code));
+            message = new Message(id, contents, registerDate, MessageType.values()[code]);
         }
         return message;
     }
@@ -48,16 +48,13 @@ public class DBHelper extends SQLiteOpenHelper {
         List<Message> list = new ArrayList<>();
 
         SQLiteDatabase db = getReadableDatabase();
-
-        Cursor cursor = db.query("message", new String[]{"id", "contents", "register_date", "message_type"}, null, null, null, null, null);
-        // 하나의 메시지만 가져오기 때문에 while이 아니라 if문을 사용하여 가져올 데이터 있으면 가져와서 message를 리턴하고, 없으면 null을 리턴한다.
-        if (cursor.moveToNext()) {
+        Cursor cursor = db.query("message", new String[]{"id", "contents", "register_date", "message_type"}, null,null, null, null, null);
+        while (cursor.moveToNext()) {
             int id = cursor.getInt(0);
             String contents = cursor.getString(1);
             String registerDate = cursor.getString(2);
             int code = cursor.getInt(3);
-            Message message = new Message(id, contents, registerDate, MessageType.of(code));
-            list.add(message);
+            list.add(new Message(id, contents, registerDate, MessageType.values()[code]));
         }
 
         return list;
@@ -72,9 +69,7 @@ public class DBHelper extends SQLiteOpenHelper {
 //        db.execSQL("INSERT INTO MESSAGE (CONTENTS) VALUES ('" + contents + "')");
         ContentValues values = new ContentValues();
         values.put("contents", contents);
-        values.put("message_type", type.getCode());
-
-        // 57번 라인과 62번 라인은 같은 동작을 한다.
+        values.put("message_type", type.ordinal());
         return db.insert("message", null, values);
     }
 
